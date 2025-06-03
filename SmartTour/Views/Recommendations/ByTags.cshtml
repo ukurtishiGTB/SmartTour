@@ -1,0 +1,39 @@
+@model IEnumerable<SmartTour.Models.Place>
+@{
+    ViewData["Title"] = $"Tag-Based Recommendations for {ViewBag.UserKey}";
+}
+
+<div class="container py-4">
+    <h1 class="display-6 mb-3">“Places matching @ViewBag.UserKey’s preferences”</h1>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>City</th>
+                    <th>Tags</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var p in Model)
+                {
+                    <tr>
+                        <td>@p.Name</td>
+                        <td>@p.Type</td>
+                        <td>@p.City</td>
+                        <td>@string.Join(", ", p.Tags)</td>
+                    </tr>
+                }
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="4" class="text-center text-muted">No matching places found.</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,4 +1,6 @@
 using SmartTour.Data;
+using SmartTour.Models;
+using SmartTour.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,9 +8,18 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<ArangoDBHelper>();
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+builder.Services.AddSingleton<UserService>();
+builder.Services.AddSingleton<PlaceService>();
+builder.Services.AddSingleton<TripService>();
+builder.Services.AddSingleton<RecommendationService>();
 
 
 var app = builder.Build();
+using (var scope = app.Services.CreateScope())
+{
+    var arangoHelper = scope.ServiceProvider.GetRequiredService<ArangoDBHelper>();
+    await arangoHelper.EnsureCollectionsAsync();
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

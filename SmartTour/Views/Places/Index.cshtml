@@ -1,0 +1,53 @@
+@model IEnumerable<SmartTour.Models.Place>
+@{
+    ViewData["Title"] = "Places";
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="display-6">All Places</h1>
+        <a asp-action="Create" class="btn btn-primary">+ New Place</a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Key</th>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>City</th>
+                        <th>Tags</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var p in Model)
+                    {
+                        <tr>
+                            <td>@p.Key</td>
+                            <td>@p.Name</td>
+                            <td>@p.Type</td>
+                            <td>@p.City</td>
+                            <td>@string.Join(", ", p.Tags)</td>
+                            <td class="text-end">
+                                <a asp-action="Details" asp-route-key="@p.Key" class="btn btn-sm btn-outline-info">Details</a>
+                                <a asp-action="Edit" asp-route-key="@p.Key" class="btn btn-sm btn-outline-warning">Edit</a>
+                                <form asp-action="Delete" asp-route-key="@p.Key" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this place?');">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center text-muted">No places found.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

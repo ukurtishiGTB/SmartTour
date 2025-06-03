@@ -1,0 +1,71 @@
+@model SmartTour.Models.Place
+@{
+    ViewData["Title"] = "Edit Place";
+}
+
+<div class="container py-4">
+    <h1 class="display-6 mb-3">Edit Place</h1>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form asp-action="Edit" method="post">
+                <input type="hidden" asp-for="Key" />
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <div class="form-floating">
+                            <input asp-for="Name" class="form-control" placeholder="Name" />
+                            <label asp-for="Name">Name</label>
+                            <span asp-validation-for="Name" class="text-danger small"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-floating">
+                            <input asp-for="Type" class="form-control" placeholder="Type" />
+                            <label asp-for="Type">Type</label>
+                            <span asp-validation-for="Type" class="text-danger small"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-floating">
+                            <input asp-for="City" class="form-control" placeholder="City" />
+                            <label asp-for="City">City</label>
+                            <span asp-validation-for="City" class="text-danger small"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-floating">
+                            <input asp-for="Country" class="form-control" placeholder="Country" />
+                            <label asp-for="Country">Country</label>
+                            <span asp-validation-for="Country" class="text-danger small"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input asp-for="Tags" class="form-control" placeholder="Tags" />
+                            <label asp-for="Tags">Tags (comma-separated)</label>
+                            <span asp-validation-for="Tags" class="text-danger small"></span>
+                        </div>
+                        <small class="text-muted">e.g. historic,beach,architecture</small>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-floating">
+                            <input asp-for="Coordinates.Latitude" class="form-control" placeholder="Latitude" step="any" type="number" />
+                            <label asp-for="Coordinates.Latitude">Latitude</label>
+                            <span asp-validation-for="Coordinates.Latitude" class="text-danger small"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-floating">
+                            <input asp-for="Coordinates.Longitude" class="form-control" placeholder="Longitude" step="any" type="number" />
+                            <label asp-for="Coordinates.Longitude">Longitude</label>
+                            <span asp-validation-for="Coordinates.Longitude" class="text-danger small"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <a asp-action="Index" class="btn btn-secondary ms-2">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

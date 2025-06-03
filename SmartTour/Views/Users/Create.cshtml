@@ -1,0 +1,49 @@
+@model SmartTour.Models.User
+@{
+    ViewData["Title"] = "Create User";
+}
+
+<div class="container py-4">
+    <h1 class="display-6 mb-3">Create New User</h1>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form asp-action="Create" method="post">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <div class="form-floating">
+                            <input asp-for="Key" class="form-control" placeholder="Key" />
+                            <label asp-for="Key">Key</label>
+                            <span asp-validation-for="Key" class="text-danger small"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-floating">
+                            <input asp-for="Name" class="form-control" placeholder="Name" />
+                            <label asp-for="Name">Name</label>
+                            <span asp-validation-for="Name" class="text-danger small"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-floating">
+                            <input asp-for="Email" class="form-control" placeholder="Email" />
+                            <label asp-for="Email">Email</label>
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-floating">
+                            <input asp-for="Preferences" class="form-control" placeholder="Preferences" />
+                            <label asp-for="Preferences">Preferences (comma-separated)</label>
+                            <span asp-validation-for="Preferences" class="text-danger small"></span>
+                        </div>
+                        <small class="text-muted">e.g. beach,museum,history</small>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary">Create User</button>
+                    <a asp-action="Index" class="btn btn-secondary ms-2">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

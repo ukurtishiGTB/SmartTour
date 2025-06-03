@@ -1,0 +1,35 @@
+@model IEnumerable<SmartTour.Models.RecommendationResult>
+@{
+    ViewData["Title"] = $"Recommendations for {ViewBag.PlaceKey}";
+}
+
+<div class="container py-4">
+    <h1 class="display-6 mb-3">“People who visited @ViewBag.PlaceKey also visited …”</h1>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                <tr>
+                    <th>Place Name</th>
+                    <th>Score</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var r in Model)
+                {
+                    <tr>
+                        <td>@r.PlaceName</td>
+                        <td>@r.Score</td>
+                    </tr>
+                }
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="2" class="text-center text-muted">No recommendations found.</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

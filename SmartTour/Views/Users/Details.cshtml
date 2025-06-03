@@ -1,0 +1,29 @@
+@model SmartTour.Models.User
+@{
+    ViewData["Title"] = "User Details";
+}
+
+<div class="container py-4">
+    <h1 class="display-6 mb-3">User Details</h1>
+    <div class="card shadow-sm mb-3">
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Key</dt>
+                <dd class="col-sm-9">@Model.Key</dd>
+
+                <dt class="col-sm-3">Name</dt>
+                <dd class="col-sm-9">@Model.Name</dd>
+
+                <dt class="col-sm-3">Email</dt>
+                <dd class="col-sm-9">@Model.Email</dd>
+
+                <dt class="col-sm-3">Preferences</dt>
+                <dd class="col-sm-9">@string.Join(", ", Model.Preferences)</dd>
+            </dl>
+        </div>
+    </div>
+    <div class="d-flex">
+        <a asp-action="Edit" asp-route-key="@Model.Key" class="btn btn-warning me-2">Edit</a>
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    </div>
+</div>

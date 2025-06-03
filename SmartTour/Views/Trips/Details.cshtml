@@ -1,0 +1,35 @@
+@model SmartTour.Models.Trip
+@{
+    ViewData["Title"] = "Trip Details";
+}
+
+<div class="container py-4">
+    <h1 class="display-6 mb-3">Trip Details</h1>
+    <div class="card shadow-sm mb-3">
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Key</dt>
+                <dd class="col-sm-9">@Model.Key</dd>
+
+                <dt class="col-sm-3">UserId</dt>
+                <dd class="col-sm-9">@Model.UserId</dd>
+
+                <dt class="col-sm-3">Places</dt>
+                <dd class="col-sm-9">@string.Join(", ", Model.Places)</dd>
+
+                <dt class="col-sm-3">Start Date</dt>
+                <dd class="col-sm-9">@Model.StartDate.ToString("yyyy-MM-dd")</dd>
+
+                <dt class="col-sm-3">End Date</dt>
+                <dd class="col-sm-9">@Model.EndDate.ToString("yyyy-MM-dd")</dd>
+
+                <dt class="col-sm-3">Notes</dt>
+                <dd class="col-sm-9">@Model.Notes</dd>
+            </dl>
+        </div>
+    </div>
+    <div class="d-flex">
+        <a asp-action="Edit" asp-route-key="@Model.Key" class="btn btn-warning me-2">Edit</a>
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    </div>
+</div>

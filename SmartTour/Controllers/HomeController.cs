@@ -18,13 +18,13 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Index()
     {
-        bool isAlive = await _arangoDBHelper.IsServerAliveAsync();
+        //bool isAlive = await _arangoDBHelper.IsServerAliveAsync();
 
         // Pass a simple string into ViewBag so the view can render it
-        ViewBag.ArangoStatus = isAlive
+        /*ViewBag.ArangoStatus = isAlive
             ? "✅ ArangoDB is reachable."
             : "❌ Cannot reach ArangoDB.";
-
+        */
         return View();
     }
 
