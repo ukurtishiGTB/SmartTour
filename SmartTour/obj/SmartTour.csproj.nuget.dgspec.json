@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/Users/ubejdkurtishi/RiderProjects/SmartTour/SmartTour/SmartTour.csproj": {}
+    "/Users/arthajrullahu/RiderProjects/SmartTour2/SmartTour/SmartTour.csproj": {}
   },
   "projects": {
-    "/Users/ubejdkurtishi/RiderProjects/SmartTour/SmartTour/SmartTour.csproj": {
+    "/Users/arthajrullahu/RiderProjects/SmartTour2/SmartTour/SmartTour.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/ubejdkurtishi/RiderProjects/SmartTour/SmartTour/SmartTour.csproj",
+        "projectUniqueName": "/Users/arthajrullahu/RiderProjects/SmartTour2/SmartTour/SmartTour.csproj",
         "projectName": "SmartTour",
-        "projectPath": "/Users/ubejdkurtishi/RiderProjects/SmartTour/SmartTour/SmartTour.csproj",
-        "packagesPath": "/Users/ubejdkurtishi/.nuget/packages/",
-        "outputPath": "/Users/ubejdkurtishi/RiderProjects/SmartTour/SmartTour/obj/",
+        "projectPath": "/Users/arthajrullahu/RiderProjects/SmartTour2/SmartTour/SmartTour.csproj",
+        "packagesPath": "/Users/arthajrullahu/.nuget/packages/",
+        "outputPath": "/Users/arthajrullahu/RiderProjects/SmartTour2/SmartTour/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/Users/ubejdkurtishi/.nuget/NuGet/NuGet.Config"
+          "/Users/arthajrullahu/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
@@ -38,7 +38,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.200"
+        "SdkAnalysisLevel": "9.0.100"
       },
       "frameworks": {
         "net9.0": {
@@ -62,7 +62,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.200/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.102/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
