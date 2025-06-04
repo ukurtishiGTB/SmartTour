@@ -1,63 +1,134 @@
-@model SmartTour.Models.Trip
+@model SmartTour.ViewModels.TripCreateViewModel
+
 @{
-    ViewData["Title"] = "Create Trip";
+    ViewData["Title"] = "Create New Trip";
+    var initialPlaceCount = Model.Places?.Count ?? 0;
 }
 
 <div class="container py-4">
-    <h1 class="display-6 mb-3">Create New Trip</h1>
-    <div class="card shadow-sm">
-        <div class="card-body">
-            <form asp-action="Create" method="post">
-                <div class="row g-3">
-                    <div class="col-md-3">
-                        <div class="form-floating">
-                            <input asp-for="Key" class="form-control" placeholder="Key" />
-                            <label asp-for="Key">Key</label>
-                            <span asp-validation-for="Key" class="text-danger small"></span>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-floating">
-                            <input asp-for="UserId" class="form-control" placeholder="UserId" />
-                            <label asp-for="UserId">UserId</label>
-                            <span asp-validation-for="UserId" class="text-danger small"></span>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-floating">
-                            <input asp-for="PlacesCsv" class="form-control" placeholder="PlacesCsv" />
-                            <label asp-for="PlacesCsv">Places (comma-separated)</label>
-                            <span asp-validation-for="PlacesCsv" class="text-danger small"></span>
-                        </div>
-                        <small class="text-muted">e.g. paris, rome, barcelona</small>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-floating">
-                            <input asp-for="StartDate" class="form-control" placeholder="Start Date" type="date" />
-                            <label asp-for="StartDate">Start Date</label>
-                            <span asp-validation-for="StartDate" class="text-danger small"></span>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-floating">
-                            <input asp-for="EndDate" class="form-control" placeholder="End Date" type="date" />
-                            <label asp-for="EndDate">End Date</label>
-                            <span asp-validation-for="EndDate" class="text-danger small"></span>
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="form-floating">
-                            <textarea asp-for="Notes" class="form-control" placeholder="Notes" style="height: 100px"></textarea>
-                            <label asp-for="Notes">Notes</label>
-                            <span asp-validation-for="Notes" class="text-danger small"></span>
-                        </div>
-                    </div>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title h4 mb-0">Create New Trip</h2>
                 </div>
-                <div class="mt-4">
-                    <button type="submit" class="btn btn-primary">Create Trip</button>
-                    <a asp-action="Index" class="btn btn-secondary ms-2">Cancel</a>
+                <div class="card-body">
+                    <form asp-action="Create" method="post">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="Name" class="form-label"></label>
+                            <input asp-for="Name" class="form-control" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label"></label>
+                            <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="StartDate" class="form-label"></label>
+                                <input asp-for="StartDate" class="form-control" type="date" />
+                                <span asp-validation-for="StartDate" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="EndDate" class="form-label"></label>
+                                <input asp-for="EndDate" class="form-control" type="date" />
+                                <span asp-validation-for="EndDate" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Budget" class="form-label"></label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input asp-for="Budget" class="form-control" type="number" step="0.01" min="0" />
+                            </div>
+                            <span asp-validation-for="Budget" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Places" class="form-label">Places to Visit</label>
+                            <div id="placesList" class="mb-2">
+                                @if (Model.Places != null && Model.Places.Count > 0)
+                                {
+                                    for (int i = 0; i < Model.Places.Count; i++)
+                                    {
+                                        <div class="input-group mb-2">
+                                            <input type="text" name="Places[@i].Name" class="form-control" placeholder="Place name" value="@Model.Places[i].Name" required />
+                                            <button type="button" class="btn btn-outline-danger" onclick="this.parentElement.remove()">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                            <input type="hidden" id="initialPlaceCount" value="@initialPlaceCount" />
+                            <button type="button" class="btn btn-outline-secondary" onclick="addPlace()">
+                                <i class="bi bi-plus-circle me-2"></i>Add Place
+                            </button>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">Create Trip</button>
+                            <a asp-action="MyTrips" class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </form>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        let placeCount = parseInt(document.getElementById('initialPlaceCount').value || '0');
+        
+        function addPlace() {
+            const placesList = document.getElementById('placesList');
+            const placeDiv = document.createElement('div');
+            placeDiv.className = 'input-group mb-2';
+            placeDiv.innerHTML = `
+                <input type="text" name="Places[${placeCount}].Name" class="form-control" placeholder="Place name" required />
+                <button type="button" class="btn btn-outline-danger" onclick="this.parentElement.remove()">
+                    <i class="bi bi-trash"></i>
+                </button>
+            `;
+            placesList.appendChild(placeDiv);
+            placeCount++;
+        }
+
+        // Add date validation
+        document.addEventListener('DOMContentLoaded', function() {
+            const startDate = document.querySelector('[name="StartDate"]');
+            const endDate = document.querySelector('[name="EndDate"]');
+
+            function validateDates() {
+                if (startDate.value && endDate.value) {
+                    if (new Date(endDate.value) < new Date(startDate.value)) {
+                        endDate.setCustomValidity('End date must be after start date');
+                    } else {
+                        endDate.setCustomValidity('');
+                    }
+                }
+            }
+
+            startDate.addEventListener('change', validateDates);
+            endDate.addEventListener('change', validateDates);
+        });
+    </script>
+}
+
+@section Styles {
+    <style>
+        .input-group .btn-outline-danger {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+    </style>
+}

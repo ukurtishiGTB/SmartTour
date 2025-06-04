@@ -1,0 +1,190 @@
+@model SmartTour.ViewModels.MyTripsViewModel
+@{
+    ViewData["Title"] = "My Trips";
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0">My Trips</h1>
+        <a asp-controller="Recommendations" asp-action="PersonalizedTrip" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-2"></i>Plan New Trip
+        </a>
+    </div>
+
+    @if (!Model.UpcomingTrips.Any() && !Model.PastTrips.Any())
+    {
+        <div class="text-center py-5">
+            <div class="display-1 text-muted mb-4">
+                <i class="bi bi-airplane"></i>
+            </div>
+            <h3>No trips yet</h3>
+            <p class="text-muted">Start planning your next adventure!</p>
+            <a asp-controller="Recommendations" asp-action="PersonalizedTrip" class="btn btn-primary">
+                Get Trip Recommendations
+            </a>
+        </div>
+    }
+    else
+    {
+        @if (Model.UpcomingTrips.Any())
+        {
+            <h2 class="h5 mb-3">Upcoming Trips</h2>
+            <div class="row g-4 mb-5">
+                @foreach (var trip in Model.UpcomingTrips)
+                {
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100">
+                            @if (!string.IsNullOrEmpty(trip.ImageUrl))
+                            {
+                                <img src="@trip.ImageUrl" class="card-img-top" alt="@trip.Name" style="height: 200px; object-fit: cover;">
+                            }
+                            <div class="card-body">
+                                <h5 class="card-title">@trip.Name</h5>
+                                <p class="card-text text-muted">
+                                    <i class="bi bi-calendar me-2"></i>
+                                    @trip.StartDate.ToString("MMM dd") - @trip.EndDate.ToString("MMM dd, yyyy")
+                                </p>
+                                <div class="d-flex flex-wrap gap-2 mb-3">
+                                    @foreach (var place in trip.Places)
+                                    {
+                                        <span class="badge bg-light text-dark">@place.Name</span>
+                                    }
+                                </div>
+                                <div class="progress mb-3" style="height: 5px;">
+                                    @{
+                                        var daysUntil = (trip.StartDate - DateTime.Now).Days;
+                                        var totalDays = (trip.StartDate - trip.CreatedAt).Days;
+                                        var progress = ((totalDays - daysUntil) * 100) / totalDays;
+                                    }
+                                    <div class="progress-bar bg-success" role="progressbar" style="width: @progress%"></div>
+                                </div>
+                                <small class="text-muted">@daysUntil days until trip</small>
+                            </div>
+                            <div class="card-footer bg-transparent">
+                                <div class="btn-group w-100">
+                                    <a asp-action="Details" asp-route-id="@trip.Id" class="btn btn-outline-primary">View Details</a>
+                                    <button type="button" class="btn btn-outline-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown">
+                                        <span class="visually-hidden">Toggle Dropdown</span>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li><a class="dropdown-item" href="#"><i class="bi bi-pencil me-2"></i>Edit</a></li>
+                                        <li><a class="dropdown-item" href="#"><i class="bi bi-share me-2"></i>Share</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <form asp-action="Delete" asp-route-id="@trip.Id" method="post" class="d-inline">
+                                                <button type="submit" class="dropdown-item text-danger">
+                                                    <i class="bi bi-trash me-2"></i>Delete
+                                                </button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+
+        @if (Model.PastTrips.Any())
+        {
+            <h2 class="h5 mb-3">Past Trips</h2>
+            <div class="row g-4">
+                @foreach (var trip in Model.PastTrips)
+                {
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100">
+                            @if (!string.IsNullOrEmpty(trip.ImageUrl))
+                            {
+                                <img src="@trip.ImageUrl" class="card-img-top" alt="@trip.Name" style="height: 200px; object-fit: cover;">
+                            }
+                            <div class="card-body">
+                                <h5 class="card-title">@trip.Name</h5>
+                                <p class="card-text text-muted">
+                                    <i class="bi bi-calendar-check me-2"></i>
+                                    @trip.StartDate.ToString("MMM dd") - @trip.EndDate.ToString("MMM dd, yyyy")
+                                </p>
+                                <div class="d-flex flex-wrap gap-2">
+                                    @foreach (var place in trip.Places)
+                                    {
+                                        <span class="badge bg-light text-dark">@place.Name</span>
+                                    }
+                                </div>
+                            </div>
+                            <div class="card-footer bg-transparent">
+                                <div class="btn-group w-100">
+                                    <a asp-action="Details" asp-route-id="@trip.Id" class="btn btn-outline-secondary">View Memories</a>
+                                    <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#rateTrip@(trip.Id)">
+                                        <i class="bi bi-star me-2"></i>Rate Trip
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Rating Modal -->
+                    <div class="modal fade" id="rateTrip@(trip.Id)" tabindex="-1">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Rate Your Trip to @trip.Name</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <form asp-action="RateTrip" method="post">
+                                    <div class="modal-body">
+                                        <input type="hidden" name="tripId" value="@trip.Id">
+                                        <div class="mb-3">
+                                            <label class="form-label">Overall Experience</label>
+                                            <div class="rating">
+                                                @for (int i = 5; i >= 1; i--)
+                                                {
+                                                    <input type="radio" name="rating" value="@i" id="rating@(trip.Id)_@i" @(trip.Rating == i ? "checked" : "")>
+                                                    <label for="rating@(trip.Id)_@i">☆</label>
+                                                }
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Your Review</label>
+                                            <textarea class="form-control" name="review" rows="3">@trip.Review</textarea>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Save Rating</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    }
+</div>
+
+@section Styles {
+    <style>
+        .rating {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: flex-end;
+        }
+
+        .rating input {
+            display: none;
+        }
+
+        .rating label {
+            cursor: pointer;
+            font-size: 30px;
+            color: #ddd;
+            padding: 5px;
+        }
+
+        .rating input:checked ~ label,
+        .rating label:hover,
+        .rating label:hover ~ label {
+            color: #ffd700;
+        }
+    </style>
+} 

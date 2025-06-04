@@ -8,6 +8,7 @@
 
     <ItemGroup>
       <PackageReference Include="ArangoDBNetStandard" Version="3.1.0" />
+      <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
     </ItemGroup>
 
 </Project>

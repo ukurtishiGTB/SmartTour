@@ -1,10 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "+HPkbeDsCUc=",
+  "dgSpecHash": "cffhLNO3cXc=",
   "success": true,
   "projectFilePath": "/Users/ubejdkurtishi/RiderProjects/SmartTour/SmartTour/SmartTour.csproj",
   "expectedPackageFiles": [
     "/Users/ubejdkurtishi/.nuget/packages/arangodbnetstandard/3.1.0/arangodbnetstandard.3.1.0.nupkg.sha512",
+    "/Users/ubejdkurtishi/.nuget/packages/bcrypt.net-next/4.0.3/bcrypt.net-next.4.0.3.nupkg.sha512",
     "/Users/ubejdkurtishi/.nuget/packages/newtonsoft.json/13.0.2/newtonsoft.json.13.0.2.nupkg.sha512"
   ],
   "logs": []

@@ -1,6 +1,7 @@
 using SmartTour.Data;
 using SmartTour.Models;
 using SmartTour.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,12 +14,48 @@ builder.Services.AddSingleton<PlaceService>();
 builder.Services.AddSingleton<TripService>();
 builder.Services.AddSingleton<RecommendationService>();
 
+// Add authentication services
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<AuthService>();
+
+// Add cookie authentication
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Account/Login";
+        options.LogoutPath = "/Account/Logout";
+        options.AccessDeniedPath = "/Account/AccessDenied";
+        options.Cookie.HttpOnly = true;
+        options.Cookie.SameSite = SameSiteMode.Lax; // Changed from Strict for better compatibility
+        
+    });
 
 var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
-    var arangoHelper = scope.ServiceProvider.GetRequiredService<ArangoDBHelper>();
-    await arangoHelper.EnsureCollectionsAsync();
+    try
+    {
+        var arangoHelper = scope.ServiceProvider.GetRequiredService<ArangoDBHelper>();
+        
+        // Test connection first
+        if (!await arangoHelper.TestConnectionAsync())
+        {
+            throw new Exception("Could not connect to ArangoDB. Please check your connection settings in appsettings.json");
+        }
+        
+        await arangoHelper.EnsureCollectionsAsync();
+        Console.WriteLine("[Program] Database initialization completed successfully");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"[Program] Error during database initialization: {ex.Message}");
+        Console.WriteLine($"[Program] Stack trace: {ex.StackTrace}");
+        // In development, you might want to throw the error to prevent the app from starting with an uninitialized database
+        if (app.Environment.IsDevelopment())
+        {
+            throw;
+        }
+    }
 }
 
 // Configure the HTTP request pipeline.
@@ -29,17 +66,18 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+// Make sure these are in the correct order
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 app.UseRouting();
 
+// Authentication must come before Authorization
+app.UseAuthentication();
 app.UseAuthorization();
-
-app.MapStaticAssets();
 
 app.MapControllerRoute(
         name: "default",
         pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
-
 
 app.Run();

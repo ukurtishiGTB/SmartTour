@@ -1,0 +1,93 @@
+@model IEnumerable<SmartTour.Models.Place>
+@{
+    ViewData["Title"] = "Your Personalized Trip";
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="display-6 mb-2">Your Personalized Trip</h1>
+            <p class="text-muted mb-0">Based on your interests and preferences</p>
+        </div>
+        <form asp-action="PersonalizedTrip" method="get" class="d-flex gap-2">
+            <select name="duration" class="form-select" style="width: auto;" onchange="this.form.submit()">
+                <option value="3" selected="@(ViewBag.Duration == 3 ? "selected" : null)">3 days</option>
+                <option value="5" selected="@(ViewBag.Duration == 5 ? "selected" : null)">5 days</option>
+                <option value="7" selected="@(ViewBag.Duration == 7 ? "selected" : null)">7 days</option>
+                <option value="10" selected="@(ViewBag.Duration == 10 ? "selected" : null)">10 days</option>
+                <option value="14" selected="@(ViewBag.Duration == 14 ? "selected" : null)">14 days</option>
+            </select>
+        </form>
+    </div>
+
+    @if (!Model.Any() && ViewBag.HasPreferences == false)
+    {
+        <div class="alert alert-info text-center py-5">
+            <h4>Let's Personalize Your Experience!</h4>
+            <p class="mb-4">To provide you with the best travel recommendations, we need to know your interests.</p>
+            <a asp-controller="Users" asp-action="Profile" class="btn btn-primary">Set Your Travel Preferences</a>
+        </div>
+    }
+    else if (!Model.Any())
+    {
+        <div class="alert alert-info text-center py-5">
+            <div class="spinner-border text-primary mb-3" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <h4>Generating Your Perfect Trip</h4>
+            <p class="mb-0">We're analyzing your preferences to create personalized recommendations...</p>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var place in Model)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        @*@if  (!string.IsNullOrEmpty(place.ImageUrl))
+                        {
+                            <img src="@place.ImageUrl" class="card-img-top" alt="@place.Name" style="height: 200px; object-fit: cover;">
+                        }*@
+                        <div class="card-body">
+                            <h5 class="card-title">@place.Name</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">@place.City, @place.Country</h6>
+                            <div class="d-flex flex-wrap gap-1 mb-3">
+                                @foreach (var tag in place.Tags)
+                                {
+                                    <span class="badge bg-info text-dark">@tag</span>
+                                }
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <a asp-controller="Places" asp-action="Details" asp-route-key="@place.Key" class="btn btn-sm btn-outline-primary">View Details</a>
+                                <a asp-controller="Recommendations" asp-action="ByPlace" asp-route-placeKey="@place.Key" class="btn btn-sm btn-outline-info">Similar Places</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="mt-4 d-flex gap-2 justify-content-center">
+            <a asp-controller="Trips" 
+               asp-action="Create" 
+               asp-all-route-data="@(new Dictionary<string, string>
+               {
+                   { "placeNames", string.Join(",", Model.Select(p => p.Name)) }
+               })"
+               class="btn btn-primary">Create Trip with These Places</a>
+            <a asp-controller="Places" asp-action="Index" class="btn btn-outline-secondary">Explore More Places</a>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        // Auto-refresh the page if no recommendations are shown
+        if (@(!Model.Any() && ViewBag.HasPreferences).toString().toLowerCase()) {
+            setTimeout(function() {
+                window.location.reload();
+            }, 3000);
+        }
+    </script>
+}

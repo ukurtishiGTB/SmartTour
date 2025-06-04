@@ -1,0 +1,49 @@
+@model IEnumerable<SmartTour.Models.Place>
+@{
+    ViewData["Title"] = $"Connected Places";
+}
+
+<div class="container py-4">
+    <h1 class="display-6 mb-3">Places Connected to @ViewBag.PlaceKey</h1>
+    <p class="lead mb-4">Discover places that are related or commonly visited together (up to @ViewBag.Depth connections away)</p>
+    
+    <div class="row">
+        @foreach (var place in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">@place.Name</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">@place.City, @place.Country</h6>
+                        <p class="card-text">Type: @place.Type</p>
+                        <div class="d-flex flex-wrap gap-1 mb-3">
+                            @foreach (var tag in place.Tags)
+                            {
+                                <span class="badge bg-info">@tag</span>
+                            }
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <a asp-controller="Places" asp-action="Details" asp-route-key="@place.Key" class="btn btn-sm btn-outline-primary">Details</a>
+                            <a asp-controller="Recommendations" asp-action="ByPlace" asp-route-placeKey="@place.Key" class="btn btn-sm btn-outline-info">Similar Places</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (!Model.Any())
+        {
+            <div class="col-12 text-center py-5">
+                <p class="text-muted">No connected places found. This place might be unique or new to our system!</p>
+            </div>
+        }
+    </div>
+
+    <div class="mt-4">
+        <a asp-controller="Recommendations" asp-action="ConnectedPlaces" asp-route-placeKey="@ViewBag.PlaceKey" asp-route-depth="@(ViewBag.Depth + 1)" class="btn btn-outline-primary">Expand Search Depth</a>
+        @if (User.Identity.IsAuthenticated)
+        {
+            <a asp-controller="Trips" asp-action="Create" class="btn btn-primary ms-2">Create a Trip with These Places</a>
+        }
+    </div>
+</div>

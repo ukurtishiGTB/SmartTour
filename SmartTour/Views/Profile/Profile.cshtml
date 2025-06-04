@@ -1,0 +1,107 @@
+@model SmartTour.Models.User
+@{
+    ViewData["Title"] = "My Profile";
+}
+
+<div class="container py-4">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        <div class="avatar-placeholder bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 100px; height: 100px; font-size: 2.5rem;">
+                            @(Model.Name?[0].ToString().ToUpper() ?? "U")
+                        </div>
+                        <h4 class="card-title">@Model.Name</h4>
+                    </div>
+                    
+                    <div class="border-top pt-3">
+                        <small class="text-muted">Email</small>
+                        <p class="mb-3">@Model.Email</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title mb-4">Travel Preferences</h5>
+                    <form asp-action="UpdatePreferences" method="post">
+                        <div class="mb-4">
+                            <label class="form-label">What interests you the most?</label>
+                            <div class="row g-3">
+                                @{
+                                    var allTags = new[] {
+                                        "landmark", "romantic", "history", "architecture", "views",
+                                        "art", "culture", "museum", "indoor", "religious",
+                                        "urban", "shopping", "entertainment", "nightlife",
+                                        "nature", "outdoor", "relaxation", "recreation"
+                                    };
+                                }
+                                @foreach (var tag in allTags)
+                                {
+                                    <div class="col-md-4 col-6">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="preferences" 
+                                                   value="@tag" id="@tag" 
+                                                   @(Model.Preferences.Contains(tag) ? "checked" : "")>
+                                            <label class="form-check-label text-capitalize" for="@tag">
+                                                @tag.Replace("_", " ")
+                                            </label>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="form-label">Budget Range</label>
+                            <select class="form-select" name="budgetRange">
+                                @foreach (var budget in new[] { "Budget", "Moderate", "Luxury" })
+                                {
+                                    <option 
+                                        value="@budget" 
+                                        selected="@(Model.BudgetRange == budget ? "selected" : null)">
+                                        @budget
+                                    </option>
+                                }
+                            </select>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">Save Preferences</button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title mb-4">Account Settings</h5>
+                    <form asp-action="UpdateProfile" method="post">
+                        <div class="mb-3">
+                            <label class="form-label">Name</label>
+                            <input type="text" class="form-control" name="name" value="@Model.Name" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Location</label>
+                            <input type="text" class="form-control" name="location" value="@Model.Location">
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">Update Profile</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Enable Bootstrap tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    </script>
+} 

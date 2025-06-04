@@ -1,0 +1,61 @@
+@model IEnumerable<SmartTour.Models.Place>
+@{
+    ViewData["Title"] = $"Explore {ViewBag.CityName}";
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="display-6">Explore @ViewBag.CityName</h1>
+        <div class="dropdown">
+            <button class="btn btn-outline-primary dropdown-toggle" type="button" id="cityDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                Change City
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="cityDropdown">
+                <li><a class="dropdown-item" asp-controller="Recommendations" asp-action="NearbyPlaces" asp-route-cityName="Paris">Paris</a></li>
+                <li><a class="dropdown-item" asp-controller="Recommendations" asp-action="NearbyPlaces" asp-route-cityName="Tokyo">Tokyo</a></li>
+                <li><a class="dropdown-item" asp-controller="Recommendations" asp-action="NearbyPlaces" asp-route-cityName="New York">New York</a></li>
+                <li><a class="dropdown-item" asp-controller="Recommendations" asp-action="NearbyPlaces" asp-route-cityName="Rome">Rome</a></li>
+                <li><a class="dropdown-item" asp-controller="Recommendations" asp-action="NearbyPlaces" asp-route-cityName="London">London</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="row">
+        @foreach (var place in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">@place.Name</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">@place.City, @place.Country</h6>
+                        <p class="card-text">Type: @place.Type</p>
+                        <div class="d-flex flex-wrap gap-1 mb-3">
+                            @foreach (var tag in place.Tags)
+                            {
+                                <span class="badge bg-info">@tag</span>
+                            }
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <a asp-controller="Places" asp-action="Details" asp-route-key="@place.Key" class="btn btn-sm btn-outline-primary">Details</a>
+                            <a asp-controller="Recommendations" asp-action="ConnectedPlaces" asp-route-placeKey="@place.Key" class="btn btn-sm btn-outline-info">Related Places</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (!Model.Any())
+        {
+            <div class="col-12 text-center py-5">
+                <p class="text-muted">No places found in @ViewBag.CityName. Try another city!</p>
+            </div>
+        }
+    </div>
+
+    @if (User.Identity.IsAuthenticated)
+    {
+        <div class="mt-4">
+            <a asp-controller="Trips" asp-action="Create" class="btn btn-primary">Create a Trip with These Places</a>
+        </div>
+    }
+</div>

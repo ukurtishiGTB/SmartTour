@@ -28,11 +28,10 @@
                     {
                         <tr>
                             <td>@t.Key</td>
-                            <td>@t.UserId</td>
+                            <td>@t.UserKey</td>
                             <td>@string.Join(", ", t.Places)</td>
                             <td>@t.StartDate.ToString("yyyy-MM-dd")</td>
                             <td>@t.EndDate.ToString("yyyy-MM-dd")</td>
-                            <td>@t.Notes</td>
                             <td class="text-end">
                                 <a asp-action="Details" asp-route-key="@t.Key" class="btn btn-sm btn-outline-info">Details</a>
                                 <a asp-action="Edit"    asp-route-key="@t.Key" class="btn btn-sm btn-outline-warning">Edit</a>

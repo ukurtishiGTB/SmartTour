@@ -11,21 +11,20 @@ namespace SmartTour.Models
         [JsonProperty("name")]
         public string Name { get; set; }
 
-        // e.g. “city”, “landmark”, etc.
-        [JsonProperty("type")]
-        public string Type { get; set; }
-
         [JsonProperty("city")]
         public string City { get; set; }
 
         [JsonProperty("country")]
         public string Country { get; set; }
 
-        [JsonProperty("tags")]
-        public List<string> Tags { get; set; }
+        [JsonProperty("type")]
+        public string Type { get; set; }
 
-        [JsonProperty("coordinates")]
-        public Coordinates Coordinates { get; set; }
+        [JsonProperty("tags")]
+        public List<string> Tags { get; set; } = new List<string>();
+
+        [JsonProperty("description")]
+        public string Description { get; set; }
     }
 
     public class Coordinates

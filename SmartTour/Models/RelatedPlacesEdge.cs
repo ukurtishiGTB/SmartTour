@@ -11,7 +11,7 @@ namespace SmartTour.Models
         [JsonProperty("_to")]
         public string To { get; set; }      // e.g. "Places/rome"
 
-        [JsonProperty("reason")]
-        public string Reason { get; set; }  // e.g. "popular-layover"
+        [JsonProperty("weight")]
+        public int Weight { get; set; }
     }
 }

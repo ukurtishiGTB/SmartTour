@@ -1,35 +1,152 @@
 @model SmartTour.Models.Trip
 @{
-    ViewData["Title"] = "Trip Details";
+    ViewData["Title"] = Model.Name;
 }
 
 <div class="container py-4">
-    <h1 class="display-6 mb-3">Trip Details</h1>
-    <div class="card shadow-sm mb-3">
-        <div class="card-body">
-            <dl class="row">
-                <dt class="col-sm-3">Key</dt>
-                <dd class="col-sm-9">@Model.Key</dd>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h2 mb-1">@Model.Name</h1>
+            <p class="text-muted mb-0">
+                <i class="bi bi-calendar me-2"></i>
+                @Model.StartDate.ToString("MMM dd") - @Model.EndDate.ToString("MMM dd, yyyy")
+            </p>
+        </div>
+        <span class="badge bg-@(Model.Status == "Planned" ? "info" : 
+                               Model.Status == "InProgress" ? "primary" :
+                               Model.Status == "Completed" ? "success" : "secondary")">
+            @Model.Status
+        </span>
+    </div>
 
-                <dt class="col-sm-3">UserId</dt>
-                <dd class="col-sm-9">@Model.UserId</dd>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    @if (!string.IsNullOrEmpty(Model.Description))
+                    {
+                        <h5 class="card-title">About this Trip</h5>
+                        <p class="card-text mb-4">@Model.Description</p>
+                    }
 
-                <dt class="col-sm-3">Places</dt>
-                <dd class="col-sm-9">@string.Join(", ", Model.Places)</dd>
+                    <h5 class="card-title">Places to Visit</h5>
+                    <div class="list-group list-group-flush mb-4">
+                        @foreach (var place in Model.Places)
+                        {
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-0">@place.Name</h6>
+                                    @if (!string.IsNullOrEmpty(place.City))
+                                    {
+                                        <small class="text-muted">@place.City, @place.Country</small>
+                                    }
+                                </div>
+                                @if (place.Tags != null && place.Tags.Any())
+                                {
+                                    <div class="d-flex gap-1">
+                                        @foreach (var tag in place.Tags.Take(3))
+                                        {
+                                            <span class="badge bg-light text-dark">@tag</span>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
 
-                <dt class="col-sm-3">Start Date</dt>
-                <dd class="col-sm-9">@Model.StartDate.ToString("yyyy-MM-dd")</dd>
+                    <h5 class="card-title">Trip Details</h5>
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <div class="p-3 border rounded bg-light">
+                                <div class="small text-muted">Duration</div>
+                                <div class="fw-bold">@((Model.EndDate - Model.StartDate).Days + 1) days</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="p-3 border rounded bg-light">
+                                <div class="small text-muted">Budget</div>
+                                <div class="fw-bold">$@Model.Budget.ToString("N2")</div>
+                            </div>
+                        </div>
+                    </div>
 
-                <dt class="col-sm-3">End Date</dt>
-                <dd class="col-sm-9">@Model.EndDate.ToString("yyyy-MM-dd")</dd>
+                    @if (Model.Rating.HasValue)
+                    {
+                        <div class="mt-4">
+                            <h5 class="card-title">Trip Review</h5>
+                            <div class="mb-2">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    <i class="bi bi-star@(i <= Model.Rating ? "-fill" : "") text-warning"></i>
+                                }
+                            </div>
+                            @if (!string.IsNullOrEmpty(Model.Review))
+                            {
+                                <p class="card-text">@Model.Review</p>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
 
-                <dt class="col-sm-3">Notes</dt>
-                <dd class="col-sm-9">@Model.Notes</dd>
-            </dl>
+        <div class="col-md-4">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Trip Timeline</h5>
+                    <div class="mb-3">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="bi bi-calendar-check text-success me-2"></i>
+                            <div>
+                                <div class="small text-muted">Start Date</div>
+                                <div class="fw-bold">@Model.StartDate.ToString("MMMM d, yyyy")</div>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-calendar-x text-danger me-2"></i>
+                            <div>
+                                <div class="small text-muted">End Date</div>
+                                <div class="fw-bold">@Model.EndDate.ToString("MMMM d, yyyy")</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if (Model.Status == "Planned")
+                    {
+                        <div class="d-grid gap-2">
+                            <a asp-action="Edit" asp-route-id="@Model.Key" class="btn btn-primary">
+                                <i class="bi bi-pencil me-2"></i>Edit Trip
+                            </a>
+                            <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                <i class="bi bi-trash me-2"></i>Cancel Trip
+                            </button>
+                        </div>
+                    }
+                </div>
+            </div>
         </div>
     </div>
-    <div class="d-flex">
-        <a asp-action="Edit" asp-route-key="@Model.Key" class="btn btn-warning me-2">Edit</a>
-        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
-    </div>
 </div>
+
+@if (Model.Status == "Planned")
+{
+    <div class="modal fade" id="deleteModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Cancel Trip</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to cancel this trip? This action cannot be undone.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <form asp-action="Delete" asp-route-id="@Model.Key" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-danger">Cancel Trip</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}

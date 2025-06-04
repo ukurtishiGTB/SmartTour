@@ -108,5 +108,111 @@ namespace SmartTour.Services
                 return false;
             }
         }
+
+        public async Task<Trip> GetTripAsync(string key)
+        {
+            var aql = @"
+                RETURN DOCUMENT(CONCAT('Trips/', @key))
+            ";
+
+            var cursor = await _helper.Client.Cursor.PostCursorAsync<Trip>(
+                new PostCursorBody
+                {
+                    Query = aql,
+                    BindVars = new Dictionary<string, object> { { "key", key } }
+                }
+            );
+
+            return cursor.Result.FirstOrDefault();
+        }
+
+        public async Task<IEnumerable<Trip>> GetUpcomingTripsAsync(string userKey)
+        {
+            var aql = @"
+                FOR t IN Trips
+                    FILTER t.user_key == @userKey
+                    AND DATE_TIMESTAMP(t.start_date) >= DATE_TIMESTAMP(@today)
+                    SORT t.start_date ASC
+                    RETURN t
+            ";
+
+            var cursor = await _helper.Client.Cursor.PostCursorAsync<Trip>(
+                new PostCursorBody
+                {
+                    Query = aql,
+                    BindVars = new Dictionary<string, object>
+                    {
+                        { "userKey", userKey },
+                        { "today", DateTime.UtcNow.Date }
+                    }
+                }
+            );
+
+            return cursor.Result;
+        }
+
+        public async Task<IEnumerable<Trip>> GetPastTripsAsync(string userKey)
+        {
+            var aql = @"
+                FOR t IN Trips
+                    FILTER t.user_key == @userKey
+                    AND DATE_TIMESTAMP(t.end_date) < DATE_TIMESTAMP(@today)
+                    SORT t.end_date DESC
+                    RETURN t
+            ";
+
+            var cursor = await _helper.Client.Cursor.PostCursorAsync<Trip>(
+                new PostCursorBody
+                {
+                    Query = aql,
+                    BindVars = new Dictionary<string, object>
+                    {
+                        { "userKey", userKey },
+                        { "today", DateTime.UtcNow.Date }
+                    }
+                }
+            );
+
+            return cursor.Result;
+        }
+
+        public async Task<bool> UpdateTripAsync(Trip trip)
+        {
+            try
+            {
+                var response = await _helper.Client.Document.PutDocumentAsync(
+                    "Trips",
+                    trip.Key,
+                    trip
+                );
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> DeleteTripAsync(string key)
+        {
+            try
+            {
+                await _helper.Client.Document.DeleteDocumentAsync("Trips", key);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public async Task<string> CreateTripAsync(Trip trip)
+        {
+            var response = await _helper.Client.Document.PostDocumentAsync(
+                "Trips",
+                trip
+            );
+            return response._key;
+        }
     }
 }
