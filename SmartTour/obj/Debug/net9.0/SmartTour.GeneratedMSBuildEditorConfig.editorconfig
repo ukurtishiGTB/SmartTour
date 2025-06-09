@@ -92,6 +92,18 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[/Users/ubejdkurtishi/RiderProjects/SmartTour/SmartTour/Views/TripPlanning/NoRecommendations.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVHJpcFBsYW5uaW5nL05vUmVjb21tZW5kYXRpb25zLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/ubejdkurtishi/RiderProjects/SmartTour/SmartTour/Views/TripPlanning/PlanTrip.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVHJpcFBsYW5uaW5nL1BsYW5UcmlwLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/ubejdkurtishi/RiderProjects/SmartTour/SmartTour/Views/TripPlanning/ReviewSuggestion.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVHJpcFBsYW5uaW5nL1Jldmlld1N1Z2dlc3Rpb24uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [/Users/ubejdkurtishi/RiderProjects/SmartTour/SmartTour/Views/Trips/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVHJpcHMvQ3JlYXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 

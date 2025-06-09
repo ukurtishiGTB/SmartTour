@@ -1,149 +1,88 @@
-﻿@{
+﻿@using System.Security.Claims
+@{
     ViewData["Title"] = "Home";
 }
 
-<div class="container py-4">
-    <div class="p-5 mb-4 bg-light rounded-3" style="background: linear-gradient(rgba(46, 125, 50, 0.7), rgba(46, 125, 50, 0.9)), url('/images/travel-bg.jpg') center/cover no-repeat; color: white;">
-        <div class="container-fluid py-5">
-            <h1 class="display-5 fw-bold">SmartTour: Your Personalized Travel Companion</h1>
-            <p class="col-md-8 fs-4">Discover your perfect travel destinations with AI-powered recommendations based on your interests, preferences, and travel style.</p>
-            @if (!User.Identity.IsAuthenticated)
-            {
-                <a asp-controller="Account" asp-action="Register" class="btn btn-light btn-lg me-2">Sign Up</a>
-                <a asp-controller="Account" asp-action="Login" class="btn btn-outline-light btn-lg">Log In</a>
-            }
-            else
-            {
-                <a asp-controller="Recommendations" asp-action="PersonalizedTrip" class="btn btn-success btn-lg me-2">Get Your Trip Plan</a>
-                <a asp-controller="Places" asp-action="Index" class="btn btn-outline-light btn-lg">Explore Places</a>
-            }
-        </div>
-    </div>
-
-    <div class="row mt-5 mb-5">
-        <div class="col-12 text-center mb-4">
-            <h2 class="display-6">Why Choose SmartTour?</h2>
-            <p class="lead">We make travel planning easy and personalized just for you</p>
-        </div>
-        <div class="col-md-4 mb-4">
-            <div class="card h-100 border-0 shadow-sm">
-                <div class="card-body text-center">
-                    <div class="mb-3">
-                        <i class="bi bi-person-check fs-1 text-success"></i>
-                    </div>
-                    <h3 class="h4">Personalized Recommendations</h3>
-                    <p>Get trip suggestions tailored to your interests, whether you love adventure, culture, food, or relaxation.</p>
-                </div>
+<div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-light hero-section">
+    <div class="col-md-8 p-lg-5 mx-auto my-5">
+        <h1 class="display-4 fw-bold">Your Next Adventure Awaits</h1>
+        <p class="lead fw-normal">Let our AI plan your perfect trip based on your preferences and interests.</p>
+        
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            var userKey = User.FindFirstValue("UserId");
+            <a asp-controller="TripPlanning" asp-action="PlanTrip" asp-route-userKey="@userKey" class="btn btn-primary btn-lg px-4 mb-3">
+                <i class="bi bi-magic"></i> Plan Me a Trip
+            </a>
+        }
+        else
+        {
+            <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                <a asp-controller="Account" asp-action="Register" class="btn btn-primary btn-lg px-4 me-sm-3">Get Started</a>
+                <a asp-controller="Account" asp-action="Login" class="btn btn-outline-secondary btn-lg px-4">Sign In</a>
             </div>
-        </div>
-        <div class="col-md-4 mb-4">
-            <div class="card h-100 border-0 shadow-sm">
-                <div class="card-body text-center">
-                    <div class="mb-3">
-                        <i class="bi bi-map fs-1 text-success"></i>
-                    </div>
-                    <h3 class="h4">Smart Trip Planning</h3>
-                    <p>Our AI creates optimized itineraries based on your preferences, travel duration, and destination choices.</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4 mb-4">
-            <div class="card h-100 border-0 shadow-sm">
-                <div class="card-body text-center">
-                    <div class="mb-3">
-                        <i class="bi bi-people fs-1 text-success"></i>
-                    </div>
-                    <h3 class="h4">Community Insights</h3>
-                    <p>Connect with travelers who share your interests and discover places recommended by like-minded explorers.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row mt-4 mb-5">
-        <div class="col-12 text-center">
-            <h2 class="h3 mb-4">How It Works</h2>
-            <div class="row justify-content-center">
-                <div class="col-md-8">
-                    <div class="card border-0 shadow-sm">
-                        <div class="card-body">
-                            <ol class="list-unstyled">
-                                <li class="d-flex align-items-center mb-4">
-                                    <span class="badge bg-success rounded-circle fs-5 me-3">1</span>
-                                    <div>
-                                        <h4 class="h5 mb-1">Create Your Profile</h4>
-                                        <p class="mb-0">Tell us about your travel interests (e.g., beaches, hiking, food, culture) and preferences.</p>
-                                    </div>
-                                </li>
-                                <li class="d-flex align-items-center mb-4">
-                                    <span class="badge bg-success rounded-circle fs-5 me-3">2</span>
-                                    <div>
-                                        <h4 class="h5 mb-1">Get Personalized Recommendations</h4>
-                                        <p class="mb-0">Click "Get Your Trip Plan" and receive instant, AI-powered travel suggestions.</p>
-                                    </div>
-                                </li>
-                                <li class="d-flex align-items-center">
-                                    <span class="badge bg-success rounded-circle fs-5 me-3">3</span>
-                                    <div>
-                                        <h4 class="h5 mb-1">Customize & Explore</h4>
-                                        <p class="mb-0">Fine-tune your trip plan, discover related places, and start your adventure!</p>
-                                    </div>
-                                </li>
-                            </ol>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row align-items-md-stretch mb-4">
-        <div class="col-md-6">
-            <div class="h-100 p-5 text-white rounded-3" style="background-color: var(--st-secondary);">
-                <h2>Discover New Places</h2>
-                <p>Explore destinations based on your interests and preferences. Find hidden gems and popular attractions.</p>
-                <a asp-controller="Places" asp-action="Index" class="btn btn-outline-light">Browse Places</a>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="h-100 p-5 bg-light border rounded-3">
-                <h2>Plan Your Trip</h2>
-                <p>Create personalized travel itineraries and organize your adventures with our smart recommendations.</p>
-                <a asp-controller="Trips" asp-action="Index" class="btn btn-outline-secondary">View Trips</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="row mb-2">
-        <div class="col-md-12">
-            <h3 class="border-bottom pb-2 mb-4" style="color: var(--st-primary-dark);">Popular Destinations</h3>
-        </div>
-        <div class="col-md-4 mb-3">
-            <div class="card h-100">
-                <div class="card-body">
-                    <h5 class="card-title">Paris</h5>
-                    <p class="card-text">Explore the City of Light with its iconic landmarks and charming streets.</p>
-                    <a asp-controller="Recommendations" asp-action="NearbyPlaces" asp-route-cityName="Paris" class="btn btn-sm btn-outline-primary">Explore Paris</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4 mb-3">
-            <div class="card h-100">
-                <div class="card-body">
-                    <h5 class="card-title">Tokyo</h5>
-                    <p class="card-text">Discover the perfect blend of traditional culture and modern innovation.</p>
-                    <a asp-controller="Recommendations" asp-action="NearbyPlaces" asp-route-cityName="Tokyo" class="btn btn-sm btn-outline-primary">Explore Tokyo</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4 mb-3">
-            <div class="card h-100">
-                <div class="card-body">
-                    <h5 class="card-title">New York</h5>
-                    <p class="card-text">Experience the energy and diversity of the city that never sleeps.</p>
-                    <a asp-controller="Recommendations" asp-action="NearbyPlaces" asp-route-cityName="New York" class="btn btn-sm btn-outline-primary">Explore New York</a>
-                </div>
-            </div>
-        </div>
+        }
     </div>
 </div>
+
+@if (User.Identity?.IsAuthenticated == true)
+{
+    <div class="container px-4 py-5">
+        <h2 class="pb-2 border-bottom">Quick Actions</h2>
+        <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
+            <div class="col d-flex align-items-start">
+                <div class="icon-square text-bg-light d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
+                    <i class="bi bi-briefcase"></i>
+                </div>
+                <div>
+                    <h3 class="fs-2">My Trips</h3>
+                    <p>View and manage your upcoming and past adventures.</p>
+                    <a asp-controller="Trips" asp-action="MyTrips" class="btn btn-primary">
+                        View Trips
+                    </a>
+                </div>
+            </div>
+            <div class="col d-flex align-items-start">
+                <div class="icon-square text-bg-light d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
+                    <i class="bi bi-people"></i>
+                </div>
+                <div>
+                    <h3 class="fs-2">Friends' Trips</h3>
+                    <p>Discover where your friends are traveling.</p>
+                    <a asp-controller="Trip" asp-action="FriendsTrips" class="btn btn-primary">
+                        Explore
+                    </a>
+                </div>
+            </div>
+            <div class="col d-flex align-items-start">
+                <div class="icon-square text-bg-light d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
+                    <i class="bi bi-gear"></i>
+                </div>
+                <div>
+                    <h3 class="fs-2">Travel Preferences</h3>
+                    <p>Update your travel style and preferences.</p>
+                    <a asp-controller="Profile" asp-action="Profile" class="btn btn-primary">
+                        Update
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Styles {
+    <style>
+        .hero-section {
+            background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)),
+                        url('/images/hero-bg.jpg') center/cover no-repeat;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .icon-square {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 0.75rem;
+        }
+    </style>
+}

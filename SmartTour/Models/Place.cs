@@ -25,6 +25,10 @@ namespace SmartTour.Models
 
         [JsonProperty("description")]
         public string Description { get; set; }
+        [JsonProperty("image")]
+        public string ImageUrl { get; set; }
+        [JsonProperty("coordinates")]
+        public Coordinates Coordinates { get; set; }
     }
 
     public class Coordinates

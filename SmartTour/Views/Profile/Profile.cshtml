@@ -56,6 +56,21 @@
                         </div>
                         
                         <div class="mb-4">
+                            <label class="form-label">Travel Style</label>
+                            <select class="form-select" name="travelStyle">
+                                @foreach (var style in new[] { "Nature", "City", "Adventure", "Relax" })
+                                {
+                                    <option 
+                                        value="@style" 
+                                        selected="@(Model.TravelStyle == style ? "selected" : null)">
+                                        @style
+                                    </option>
+                                }
+                            </select>
+                            <small class="form-text text-muted">This affects how we prioritize recommendations for you.</small>
+                        </div>
+                        
+                        <div class="mb-4">
                             <label class="form-label">Budget Range</label>
                             <select class="form-select" name="budgetRange">
                                 @foreach (var budget in new[] { "Budget", "Moderate", "Luxury" })
@@ -104,4 +119,20 @@
             return new bootstrap.Tooltip(tooltipTriggerEl)
         })
     </script>
+}
+
+@section Styles {
+    <style>
+        .avatar-placeholder {
+            width: 100px;
+            height: 100px;
+            background-color: #007bff;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+    </style>
 } 

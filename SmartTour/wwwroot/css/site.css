@@ -1,5 +1,7 @@
 html {
   font-size: 14px;
+  position: relative;
+  min-height: 100%;
 }
 
 @media (min-width: 768px) {
@@ -9,82 +11,71 @@ html {
 }
 
 :root {
-  --st-primary: #2e7d32;      /* Forest Green */
-  --st-primary-light: #60ad5e; /* Light Green */
-  --st-primary-dark: #005005;  /* Dark Green */
-  --st-secondary: #795548;     /* Brown */
-  --st-secondary-light: #a98274; /* Light Brown */
-  --st-secondary-dark: #4b2c20; /* Dark Brown */
-  --st-accent: #ffb300;        /* Amber */
-  --st-light: #f5f5f5;         /* Off-white */
-  --st-dark: #263238;          /* Blue-grey dark */
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem var(--st-primary);
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+  --primary-color: #2196F3;
+  --primary-dark: #1976D2;
+  --primary-light: #BBDEFB;
+  --accent-color: #FF4081;
+  --text-primary: #212121;
+  --text-secondary: #757575;
+  --divider-color: #BDBDBD;
 }
 
 body {
   margin-bottom: 60px;
-  background-color: var(--st-light);
-  color: var(--st-dark);
+  color: var(--text-primary);
+  background-color: #f8f9fa;
 }
 
 /* Navbar styling */
 .navbar {
-  background-color: var(--st-primary) !important;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  background-color: white !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,.08);
 }
 
-.navbar-light .navbar-brand,
-.navbar-light .nav-link {
-  color: white !important;
+.navbar-brand {
+  font-weight: 600;
+  color: var(--primary-color) !important;
 }
 
-.navbar-light .nav-link:hover {
-  color: var(--st-accent) !important;
+.nav-link {
+  font-weight: 500;
 }
 
 /* Card styling */
 .card {
   border: none;
-  border-radius: 8px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,.05);
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,.1);
 }
 
 .card-title {
-  color: var(--st-primary-dark);
+  color: var(--primary-color);
 }
 
 /* Button styling */
 .btn-primary {
-  background-color: var(--st-primary);
-  border-color: var(--st-primary);
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
 }
 
 .btn-primary:hover {
-  background-color: var(--st-primary-dark);
-  border-color: var(--st-primary-dark);
+  background-color: var(--primary-dark);
+  border-color: var(--primary-dark);
 }
 
 .btn-outline-primary {
-  color: var(--st-primary);
-  border-color: var(--st-primary);
+  color: var(--primary-color);
+  border-color: var(--primary-color);
 }
 
 .btn-outline-primary:hover {
-  background-color: var(--st-primary);
-  border-color: var(--st-primary);
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
 }
 
 .btn-secondary {
@@ -99,19 +90,22 @@ body {
 
 /* Badge styling */
 .badge.bg-info {
-  background-color: var(--st-primary-light) !important;
+  background-color: var(--primary-light) !important;
   color: white !important;
 }
 
 /* Footer styling */
 .footer {
-  background-color: var(--st-primary-dark);
-  color: white;
-  padding: 1rem 0;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  white-space: nowrap;
+  line-height: 60px;
+  background-color: white;
 }
 
 .footer a {
-  color: var(--st-accent);
+  color: var(--accent-color);
 }
 
 /* Form styling */
@@ -126,14 +120,69 @@ body {
 
 /* Page headers */
 .display-6 {
-  color: var(--st-primary-dark);
-  border-bottom: 2px solid var(--st-primary-light);
+  color: var(--primary-color);
+  border-bottom: 2px solid var(--primary-light);
   padding-bottom: 0.5rem;
   margin-bottom: 1.5rem;
 }
 
 /* Table styling */
 .table-light {
-  background-color: var(--st-primary-light);
+  background-color: var(--primary-light);
   color: white;
+}
+
+/* Form Styling */
+.form-control:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.2rem rgba(33, 150, 243, 0.25);
+}
+
+/* Custom Components */
+.icon-square {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  font-size: 1.5rem;
+  border-radius: 0.75rem;
+  background-color: var(--primary-light);
+  color: var(--primary-color);
+}
+
+/* Hero Section */
+.hero-section {
+  background-color: white;
+  border-radius: 15px;
+  box-shadow: 0 4px 6px rgba(0,0,0,.1);
+}
+
+/* Utility Classes */
+.text-primary {
+  color: var(--primary-color) !important;
+}
+
+.bg-primary {
+  background-color: var(--primary-color) !important;
+}
+
+.border-primary {
+  border-color: var(--primary-color) !important;
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-out;
 }

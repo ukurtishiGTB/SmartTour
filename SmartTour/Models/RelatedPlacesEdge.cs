@@ -12,6 +12,6 @@ namespace SmartTour.Models
         public string To { get; set; }      // e.g. "Places/rome"
 
         [JsonProperty("weight")]
-        public int Weight { get; set; }
+        public double Weight { get; set; }
     }
 }

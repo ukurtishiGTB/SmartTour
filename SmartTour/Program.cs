@@ -13,6 +13,8 @@ builder.Services.AddSingleton<UserService>();
 builder.Services.AddSingleton<PlaceService>();
 builder.Services.AddSingleton<TripService>();
 builder.Services.AddSingleton<RecommendationService>();
+builder.Services.AddScoped<TripPlanningService>();
+builder.Services.AddScoped<TripSuggestionService>();
 
 // Add authentication services
 builder.Services.AddHttpContextAccessor();

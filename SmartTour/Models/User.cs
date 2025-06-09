@@ -33,7 +33,7 @@ namespace SmartTour.Models
         public int PreferredDuration { get; set; } = 7;
 
         [JsonProperty("travel_style")]
-        public string TravelStyle { get; set; } = "Balanced";
+        public string TravelStyle { get; set; } = "Adventure";
 
         [JsonProperty("budget_range")]
         public string BudgetRange { get; set; } = "Moderate";

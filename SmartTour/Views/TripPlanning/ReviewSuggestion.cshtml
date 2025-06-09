@@ -1,0 +1,154 @@
+@model SmartTour.Models.TripSuggestion
+
+@{
+    ViewData["Title"] = "Review Trip Suggestion";
+}
+
+<div class="container mt-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h3 class="mb-0">@Model.Name</h3>
+            <span class="badge bg-light text-primary">@(Model.IsWithinBudget ? "Within Budget" : "Over Budget")</span>
+        </div>
+        
+        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+        {
+            <div class="position-relative">
+                <img src="@Model.ImageUrl" class="card-img-top" alt="Trip destination" style="height: 300px; object-fit: cover;">
+                <div class="position-absolute bottom-0 start-0 w-100 p-3" style="background: linear-gradient(transparent, rgba(0,0,0,0.7));">
+                    <h4 class="text-white mb-0">@Model.Name</h4>
+                </div>
+            </div>
+        }
+        
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-8">
+                    <h5 class="card-title">Trip Overview</h5>
+                    <p class="card-text">@Model.Description</p>
+                    
+                    <h6 class="mt-4">Trip Highlights</h6>
+                    <ul class="list-group list-group-flush mb-4">
+                        @foreach (var highlight in Model.Highlights)
+                        {
+                            <li class="list-group-item">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                @highlight
+                            </li>
+                        }
+                    </ul>
+                    
+                    <h6>Suggested Places</h6>
+                    <div class="row">
+                        @foreach (var place in Model.SuggestedPlaces)
+                        {
+                            <div class="col-md-6 mb-3">
+                                <div class="card h-100">
+                                    @if (!string.IsNullOrEmpty(place.ImageUrl))
+                                    {
+                                        <div class="position-relative">
+                                            <img src="@place.ImageUrl" class="card-img-top" alt="@place.Name" style="height: 150px; object-fit: cover;">
+                                            <div class="position-absolute bottom-0 start-0 w-100 p-2" style="background: linear-gradient(transparent, rgba(0,0,0,0.7));">
+                                                <h6 class="text-white mb-0">@place.Name</h6>
+                                            </div>
+                                        </div>
+                                    }
+                                    <div class="card-body">
+                                        @if (string.IsNullOrEmpty(place.ImageUrl))
+                                        {
+                                            <h6 class="card-title">@place.Name</h6>
+                                        }
+                                        <p class="card-text small">@place.Description</p>
+                                        <div class="mt-2">
+                                            @foreach (var tag in place.Tags.Take(3))
+                                            {
+                                                <span class="badge bg-light text-dark me-1">@tag</span>
+                                            }
+                                            @if (place.Tags.Count > 3)
+                                            {
+                                                <span class="badge bg-light text-dark">+@(place.Tags.Count - 3) more</span>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Trip Details</h5>
+                            <ul class="list-unstyled">
+                                <li class="mb-2">
+                                    <i class="bi bi-calendar-event me-2"></i>
+                                    <strong>Dates:</strong><br/>
+                                    @Model.StartDate.ToString("MMM dd") - @Model.EndDate.ToString("MMM dd, yyyy")
+                                </li>
+                                <li class="mb-2">
+                                    <i class="bi bi-cash me-2"></i>
+                                    <strong>Budget:</strong><br/>
+                                    @Model.Budget.ToString("C")
+                                </li>
+                                <li class="mb-2">
+                                    <i class="bi bi-clock-history me-2"></i>
+                                    <strong>Duration:</strong><br/>
+                                    @((Model.EndDate - Model.StartDate).Days) days
+                                </li>
+                            </ul>
+                            
+                            <div class="d-grid gap-2 mt-4">
+                                <form asp-action="AcceptSuggestion" method="post">
+                                    <input type="hidden" name="key" value="@Model.Key" />
+                                    <button type="submit" class="btn btn-success btn-lg w-100 mb-2">
+                                        <i class="bi bi-check-lg me-2"></i>Accept Trip
+                                    </button>
+                                </form>
+                                
+                                <form asp-action="RejectSuggestion" method="post">
+                                    <input type="hidden" name="key" value="@Model.Key" />
+                                    <button type="submit" class="btn btn-outline-danger btn-lg w-100">
+                                        <i class="bi bi-x-lg me-2"></i>Reject & Try Again
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .card {
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+        
+        .card-header {
+            border-top-left-radius: 15px !important;
+            border-top-right-radius: 15px !important;
+        }
+        
+        .list-group-item {
+            border-left: none;
+            border-right: none;
+        }
+        
+        .list-group-item:first-child {
+            border-top: none;
+        }
+        
+        .list-group-item:last-child {
+            border-bottom: none;
+        }
+
+        .badge {
+            font-weight: 500;
+        }
+    </style>
+} 
