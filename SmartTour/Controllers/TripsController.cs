@@ -174,28 +174,6 @@ namespace SmartTour.Controllers
             return RedirectToAction(nameof(MyTrips));
         }
 
-        [HttpPost]
-        public async Task<IActionResult> RateTrip(string tripId, int rating, string review)
-        {
-            var currentUserId = _authService.GetCurrentUserId();
-            if (currentUserId == null)
-            {
-                return RedirectToAction("Login", "Account");
-            }
-
-            var trip = await _tripService.GetTripAsync(tripId);
-            if (trip == null || trip.UserKey != currentUserId)
-            {
-                return NotFound();
-            }
-
-            trip.Rating = rating;
-            trip.Review = review;
-            trip.UpdatedAt = DateTime.UtcNow;
-
-            await _tripService.UpdateTripAsync(trip);
-            TempData["SuccessMessage"] = "Trip rating saved successfully.";
-            return RedirectToAction(nameof(MyTrips));
-        }
+        
     }
 }

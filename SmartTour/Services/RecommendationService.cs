@@ -318,16 +318,39 @@ namespace SmartTour.Services
         }
     
         /// <summary>
-        /// Recommends places based on current location/city
+        /// Recommends places based on location (city, country, or continent)
         /// </summary>
-        /// <param name="cityName">The city name to find nearby attractions</param>
-        /// <returns>List of places in or near the specified city</returns>
-        public async Task<List<Place>> RecommendNearbyPlacesAsync(string cityName)
+        /// <param name="location">The location name (city, country, or continent)</param>
+        /// <returns>List of places in or near the specified location</returns>
+        public async Task<List<Place>> RecommendNearbyPlacesAsync(string location)
         {
             var aql = @"
+                LET searchTerm = LOWER(@location)
                 FOR p IN Places
-                    FILTER p.city == @cityName OR p.country == @cityName
-                    SORT RAND()
+                    LET cityMatch = LOWER(p.city) == searchTerm
+                    LET countryMatch = LOWER(p.country) == searchTerm
+                    LET continentMatch = LOWER(p.continent) == searchTerm
+                    LET regionMatch = LOWER(p.region) == searchTerm
+                    
+                    // Also check if the location appears in tags
+                    LET tagMatch = LENGTH(
+                        FOR tag IN p.tags
+                            FILTER LOWER(tag) == searchTerm
+                            RETURN 1
+                    )
+                    
+                    FILTER cityMatch OR countryMatch OR continentMatch OR regionMatch OR tagMatch > 0
+                    
+                    // Score based on match type
+                    LET score = (
+                        cityMatch ? 5 :      // Exact city match gets highest priority
+                        countryMatch ? 4 :    // Country match second
+                        continentMatch ? 3 :  // Continent match third
+                        regionMatch ? 2 :     // Region match fourth
+                        1                     // Tag match lowest priority
+                    )
+                    
+                    SORT score DESC, RAND()
                     LIMIT 10
                     RETURN p
             ";
@@ -336,11 +359,57 @@ namespace SmartTour.Services
                 new PostCursorBody
                 {
                     Query = aql,
-                    BindVars = new Dictionary<string, object> { { "cityName", cityName } }
+                    BindVars = new Dictionary<string, object> { { "location", location.ToLower() } }
                 }
             );
         
-            return cursor.Result.ToList();
+            var results = cursor.Result.ToList();
+
+            // If no exact matches found, try fuzzy matching
+            if (!results.Any())
+            {
+                var fuzzyAql = @"
+                    LET searchTerm = LOWER(@location)
+                    FOR p IN Places
+                        LET cityMatch = CONTAINS(LOWER(p.city), searchTerm)
+                        LET countryMatch = CONTAINS(LOWER(p.country), searchTerm)
+                        LET continentMatch = CONTAINS(LOWER(p.continent), searchTerm)
+                        LET regionMatch = CONTAINS(LOWER(p.region), searchTerm)
+                        
+                        // Also check if the location appears in tags
+                        LET tagMatch = LENGTH(
+                            FOR tag IN p.tags
+                                FILTER CONTAINS(LOWER(tag), searchTerm)
+                                RETURN 1
+                        )
+                        
+                        FILTER cityMatch OR countryMatch OR continentMatch OR regionMatch OR tagMatch > 0
+                        
+                        LET score = (
+                            cityMatch ? 5 :
+                            countryMatch ? 4 :
+                            continentMatch ? 3 :
+                            regionMatch ? 2 :
+                            1
+                        )
+                        
+                        SORT score DESC, RAND()
+                        LIMIT 10
+                        RETURN p
+                ";
+
+                cursor = await _helper.Client.Cursor.PostCursorAsync<Place>(
+                    new PostCursorBody
+                    {
+                        Query = fuzzyAql,
+                        BindVars = new Dictionary<string, object> { { "location", location.ToLower() } }
+                    }
+                );
+
+                results = cursor.Result.ToList();
+            }
+
+            return results;
         }
     }
 }

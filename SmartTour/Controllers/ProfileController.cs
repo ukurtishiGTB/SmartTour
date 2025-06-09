@@ -36,7 +36,7 @@ namespace SmartTour.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdatePreferences(string[] preferences)
+        public async Task<IActionResult> UpdatePreferences(string[] preferences, string travelStyle, string budgetRange)
         {
             var currentUserId = _authService.GetCurrentUserId();
             if (currentUserId == null)
@@ -51,6 +51,8 @@ namespace SmartTour.Controllers
             }
 
             user.Preferences = new System.Collections.Generic.List<string>(preferences ?? new string[0]);
+            user.TravelStyle = travelStyle ?? "Adventure";
+            user.BudgetRange = budgetRange ?? "Moderate";
 
             await _userService.UpdateAsync(currentUserId, user);
 

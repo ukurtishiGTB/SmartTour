@@ -17,6 +17,12 @@ namespace SmartTour.Models
         [JsonProperty("country")]
         public string Country { get; set; }
 
+        [JsonProperty("continent")]
+        public string Continent { get; set; }
+
+        [JsonProperty("region")]
+        public string Region { get; set; }
+
         [JsonProperty("type")]
         public string Type { get; set; }
 

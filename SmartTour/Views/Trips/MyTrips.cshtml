@@ -135,17 +135,6 @@
                                         <input type="hidden" name="tripId" value="@trip.Id">
                                         <div class="mb-3">
                                             <label class="form-label">Overall Experience</label>
-                                            <div class="rating">
-                                                @for (int i = 5; i >= 1; i--)
-                                                {
-                                                    <input type="radio" name="rating" value="@i" id="rating@(trip.Id)_@i" @(trip.Rating == i ? "checked" : "")>
-                                                    <label for="rating@(trip.Id)_@i">☆</label>
-                                                }
-                                            </div>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="form-label">Your Review</label>
-                                            <textarea class="form-control" name="review" rows="3">@trip.Review</textarea>
                                         </div>
                                     </div>
                                     <div class="modal-footer">
