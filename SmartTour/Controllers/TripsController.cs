@@ -112,6 +112,90 @@ namespace SmartTour.Controllers
                 return View(model);
             }
         }
+        [HttpGet]
+        public async Task<IActionResult> Edit(string id)
+        {
+            var currentUserId = _authService.GetCurrentUserId();
+            if (currentUserId == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            if (string.IsNullOrEmpty(id))
+            {
+                return BadRequest();
+            }
+
+            var trip = await _tripService.GetTripAsync(id);
+            if (trip == null || trip.UserKey != currentUserId)
+            {
+                return NotFound();
+            }
+
+            var model = new TripEditViewModel
+            {
+                Key = trip.Id,
+                Name = trip.Name,
+                Description = trip.Description,
+                StartDate = trip.StartDate,
+                EndDate = trip.EndDate,
+                Budget = trip.Budget,
+                Places = trip.Places
+                    .Select(p => new PlaceInputViewModel { Name = p.Name })
+                    .ToList()
+            };
+
+            return View(model);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(TripEditViewModel model)
+        {
+            var currentUserId = _authService.GetCurrentUserId();
+            if (currentUserId == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+            model.UserKey = currentUserId;
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var trip = await _tripService.GetTripAsync(model.Key);
+            if (trip == null || trip.UserKey != currentUserId)
+            {
+                return NotFound();
+            }
+
+            trip.Name = model.Name;
+            trip.Description = model.Description;
+            trip.StartDate = model.StartDate;
+            trip.EndDate = model.EndDate;
+            trip.Budget = model.Budget;
+            trip.UpdatedAt = DateTime.UtcNow;
+
+            // Replace places
+            trip.Places = model.Places?
+                .Select(p => new Place { Name = p.Name })
+                .ToList() 
+                ?? new List<Place>();
+
+            try
+            {
+                await _tripService.UpdateAsync(trip.Key, trip);
+                _logger.LogInformation($"Updated trip with ID: {trip.Id}");
+                TempData["SuccessMessage"] = "Trip updated successfully!";
+                return RedirectToAction(nameof(MyTrips));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error updating trip: {ex.Message}");
+                ModelState.AddModelError("", "An error occurred while updating the trip. Please try again.");
+                return View(model);
+            }
+        }
 
         public async Task<IActionResult> MyTrips()
         {
@@ -153,6 +237,7 @@ namespace SmartTour.Controllers
 
             return View(trip);
         }
+        
 
         [HttpPost]
         public async Task<IActionResult> Delete(string id)

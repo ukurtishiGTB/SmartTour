@@ -1,4 +1,5 @@
-@model SmartTour.Models.Trip
+@using System.Security.Claims
+@model SmartTour.ViewModels.TripEditViewModel
 @{
     ViewData["Title"] = "Edit Trip";
 }
@@ -8,33 +9,31 @@
     <div class="card shadow-sm">
         <div class="card-body">
             <form asp-action="Edit" method="post">
-                <input type="hidden" asp-for="Key" />
+                <input type="hidden" asp-for="Name" />
+                <input type="hidden" asp-for="Description" />
+                @{ var userKey = User.FindFirstValue("UserId"); }
+                <input type="hidden" asp-for="UserKey" value="@userKey" />
+                <input type="hidden" asp-for="Budget" />
+                <input type="hidden" asp-for="Key"/>
                 <div class="row g-3">
-                    <div class="col-md-3">
-                        <div class="form-floating">
-                            <input asp-for="UserKey" class="form-control" placeholder="UserId" />
-                            <label asp-for="UserKey">UserId</label>
-                            <span asp-validation-for="UserKey" class="text-danger small"></span>
-                        </div>
-                    </div>
                     <div class="col-md-6">
                         <div class="form-floating">
-                            <input asp-for="Places" class="form-control" placeholder="PlacesCsv" />
-                            <label asp-for="Places">Places (comma-separated)</label>
-                            <span asp-validation-for="Places" class="text-danger small"></span>
+                            <input asp-for="PlacesCsv" class="form-control" placeholder="PlacesCsv"/>
+                            <label asp-for="PlacesCsv">Places (comma-separated)</label>
+                            <span asp-validation-for="PlacesCsv" class="text-danger small"></span>
                         </div>
                         <small class="text-muted">e.g. paris, rome, barcelona</small>
                     </div>
                     <div class="col-md-3">
                         <div class="form-floating">
-                            <input asp-for="StartDate" class="form-control" placeholder="Start Date" type="date" />
+                            <input asp-for="StartDate" class="form-control" placeholder="Start Date" type="date"/>
                             <label asp-for="StartDate">Start Date</label>
                             <span asp-validation-for="StartDate" class="text-danger small"></span>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-floating">
-                            <input asp-for="EndDate" class="form-control" placeholder="End Date" type="date" />
+                            <input asp-for="EndDate" class="form-control" placeholder="End Date" type="date"/>
                             <label asp-for="EndDate">End Date</label>
                             <span asp-validation-for="EndDate" class="text-danger small"></span>
                         </div>
